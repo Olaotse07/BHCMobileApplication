@@ -6,65 +6,28 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
+
+import SocialMedia from "../components/SocialMedia";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import SocialMedia from "../components/SocialMedia";
 
-function Login() {
+function SignUpScreen() {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const navigation = useNavigation();
-
-  const handleLogin = async () => {
-    if (email === "" || password === "") {
-      setErrorMessage("Please fill in all fields.");
-      return;
-    }
-
-    setErrorMessage("");
-    setIsSubmitting(true);
-
-    try {
-      const response = await axios.post("http://localhost:5000/api/login", {
-        email,
-        password,
-      });
-
-      if (response.status === 200) {
-        alert("Login successful");
-        navigation.navigate("Main");
-      }
-    } catch (error) {
-      setErrorMessage("Invalid email or password.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <ImageBackground
-      source={require("../assets/images/appbackground.jpg")}
+      source={require("../assets/images/signupbackground.jpg")}
       style={styles.background}
     >
       <View style={styles.centerContainer}>
         <View style={styles.logoandtextContainer}>
-          <View style={styles.bhclogoContainer}>
-            <Image
-              style={styles.logo}
-              source={require("../assets/images/bhc_logo.png")}
-            />
-          </View>
-
-          <Text style={styles.welcomeText}>Welcome to BHC</Text>
+          <Image
+            style={styles.logo}
+            source={require("../assets/images/bhc_logo.png")}
+          />
+          <Text style={styles.welcomeText}>Get Started Below</Text>
         </View>
         <View style={styles.inputFieldContainer}>
           <TextInput
@@ -72,8 +35,6 @@ function Login() {
             placeholder="Email"
             placeholderTextColor="#666"
             keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
           />
           <View style={styles.passwordContainer}>
             <TextInput
@@ -81,8 +42,24 @@ function Login() {
               placeholder="Password"
               placeholderTextColor="#666"
               secureTextEntry={!passwordVisible}
-              value={password}
-              onChangeText={setPassword}
+            />
+            <TouchableOpacity
+              onPress={() => setPasswordVisible(!passwordVisible)}
+            >
+              <Icon
+                style={styles.eyes}
+                name={passwordVisible ? "eye-off" : "eye"}
+                size={24}
+                color="#666"
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.inputPassword}
+              placeholder="Confirm Password"
+              placeholderTextColor="#666"
+              secureTextEntry={!passwordVisible}
             />
             <TouchableOpacity
               onPress={() => setPasswordVisible(!passwordVisible)}
@@ -96,38 +73,22 @@ function Login() {
             </TouchableOpacity>
           </View>
         </View>
-        {errorMessage !== "" && (
-          <Text style={styles.errorText}>{errorMessage}</Text>
-        )}
-        <View style={styles.loginButtonContainer}>
-          <TouchableOpacity>
-            <Text style={styles.forgotPassword}>Forgot Password?</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.customButton}
-            onPress={handleLogin}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.loginButtonText}>Login</Text>
-            )}
+        <View style={styles.signUpButtonContainer}>
+          <TouchableOpacity style={styles.customButton}>
+            <Text style={styles.loginButtonText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
-
         <View style={styles.orContainer}>
           <View style={styles.line} />
           <Text style={styles.orText}>OR</Text>
           <View style={styles.line} />
         </View>
-
         <SocialMedia />
 
         <View style={styles.CreateAccountPrompt}>
-          <Text style={styles.promptText}>Don't have an account?</Text>
+          <Text style={styles.promptText}>Already Have an account?</Text>
           <TouchableOpacity>
-            <Text style={styles.signupText}>Create Account</Text>
+            <Text style={styles.signupText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -156,16 +117,6 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 16,
   },
-  bhclogoContainer: {
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
   logo: {
     marginVertical: 10,
     width: 90,
@@ -176,7 +127,6 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 24,
     fontWeight: "700",
-    fontStyle: "italic",
     color: "#333",
   },
   inputFieldContainer: {
@@ -213,39 +163,13 @@ const styles = StyleSheet.create({
   eyes: {
     marginRight: 5,
   },
-  errorText: {
-    color: "red",
-    fontSize: 14,
-    marginVertical: 10,
-  },
-  loginButtonContainer: {
+
+  signUpButtonContainer: {
     width: "90%",
-    flexDirection: "row",
-    justifyContent: "space-between",
     paddingHorizontal: 2,
     alignItems: "center",
   },
-  orContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "85%",
-    marginVertical: 10,
-  },
-  line: {
-    flex: 1,
-    height: 1.5,
-    backgroundColor: "#31363F",
-  },
-  orText: {
-    marginHorizontal: 10,
-    fontSize: 16,
-    color: "#666",
-  },
-  forgotPassword: {
-    color: "#007BFF",
-    fontSize: 15,
-    textDecorationLine: "underline",
-  },
+
   customButton: {
     backgroundColor: "#FF6347", // light brick red
     padding: 15,
@@ -265,6 +189,22 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 20,
     fontWeight: "bold",
+  },
+  orContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "85%",
+    marginVertical: 10,
+  },
+  line: {
+    flex: 1,
+    height: 1.5,
+    backgroundColor: "#31363F",
+  },
+  orText: {
+    marginHorizontal: 10,
+    fontSize: 16,
+    color: "#666",
   },
   CreateAccountPrompt: {
     flexDirection: "row",
@@ -287,4 +227,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default SignUpScreen;
